@@ -73,7 +73,10 @@
 }
 
 .ms-body {
-    width: fit-content;
+    /* min-width: 100% always overrides max-width in CSS, so when the header
+       pushes the statblock wider than 62ch, the body stretches with it.
+       When no wide header is present, 62ch is still the natural wrap width. */
+    min-width: 100%;
     max-width: 62ch;
 }
 
