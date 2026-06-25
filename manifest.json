@@ -4,6 +4,6 @@
   "version": "1.0.0",
   "minAppVersion": "0.15.0",
   "description": "Renders Nimble TTRPG monster statblocks from YAML.",
-  "author": "Gemini",
+  "author": "Xelerox & Kurven",
   "isDesktopOnly": false
 }
