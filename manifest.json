@@ -1,7 +1,7 @@
 {
   "id": "nimble-statblocks",
   "name": "Nimble Statblocks",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "minAppVersion": "0.15.0",
   "description": "Renders Nimble TTRPG monster statblocks from YAML.",
   "author": "Xelerox & Kurven",
