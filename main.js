@@ -65,7 +65,7 @@ module.exports = class StatblockPlugin extends obsidian.Plugin {
                         const statsRight = topSection.createDiv({ cls: "ms-std-stats" });
                         if (data.defense) buildStat(statsRight, "shield", data.defense);
                         if (data.hp) buildStat(statsRight, "heart", data.hp);
-                        if (data.speed) buildStat(statsRight, "chevrons-right", data.speed);
+                        if (data.speed && data.speed != "6") buildStat(statsRight, "chevrons-right", data.speed);
                         if (data.resistances) buildStat(statsRight, "star", data.resistances);
 
                         const body = container.createDiv({ cls: "ms-body" });
@@ -148,7 +148,7 @@ module.exports = class StatblockPlugin extends obsidian.Plugin {
                         const statsRight = topSection.createDiv({ cls: "ms-stats-right" });
                         if (data.hp) buildStat(statsRight, "heart", data.hp);
                         if (data.defense) buildStat(statsRight, "shield", data.defense);
-                        if (data.speed) buildStat(statsRight, "chevrons-right", data.speed);
+                        if (data.speed && data.speed != "6") buildStat(statsRight, "chevrons-right", data.speed);
                         if (data.resistances) buildStat(statsRight, "star", data.resistances);
 
                         const body = container.createDiv({ cls: "ms-body" });
