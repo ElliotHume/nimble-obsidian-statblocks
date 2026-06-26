@@ -4,14 +4,18 @@ const obsidian = require('obsidian');
  * Appends text to an element, converting [[Target]] and [[Target|Display]]
  * wiki-links into Obsidian internal-link anchors so hover previews,
  * graph connections, and link resolution all work as expected.
+ * Also parses **bold** and *italic* markdown into <strong>/<em> elements.
  */
 function appendWithLinks(el, text) {
     if (!text) return;
-    // Split on wiki-links and red-bold HP/damage patterns in one pass
-    const parts = String(text).split(/(\[\[[^\]]+\]\]|\d+\s*HP|\d+\s*more damage)/i);
+    // Split on wiki-links, bold/italic markdown, and red-bold HP/damage patterns
+    // in one pass. Bold (**) must precede italic (*) so ** is matched first.
+    const parts = String(text).split(/(\[\[[^\]]+\]\]|\*\*[^*]+\*\*|\*[^*]+\*|\d+\s*HP|\d+\s*more damage)/i);
     for (const part of parts) {
         if (!part) continue;
         const linkMatch = part.match(/^\[\[([^\]|]+)(?:\|([^\]]+))?\]\]$/);
+        const boldMatch = part.match(/^\*\*([\s\S]+)\*\*$/);
+        const italicMatch = part.match(/^\*([\s\S]+)\*$/);
         if (linkMatch) {
             const target = linkMatch[1].trim();
             const display = linkMatch[2] ? linkMatch[2].trim() : target;
@@ -20,6 +24,11 @@ function appendWithLinks(el, text) {
                 cls: 'internal-link',
                 attr: { 'data-href': target, href: target }
             });
+        } else if (boldMatch) {
+            // Recurse so links / red-bold inside the bold span are still parsed
+            appendWithLinks(el.createEl('strong'), boldMatch[1]);
+        } else if (italicMatch) {
+            appendWithLinks(el.createEl('em'), italicMatch[1]);
         } else if (/^(\d+\s*HP|\d+\s*more damage)$/i.test(part)) {
             el.createEl('span', { text: part, cls: 'ms-red-bold' });
         } else {
@@ -62,8 +71,18 @@ module.exports = class StatblockPlugin extends obsidian.Plugin {
                         const body = container.createDiv({ cls: "ms-body" });
                         
                         if (data.description) {
-                            const descDiv = body.createDiv({ cls: "ms-description" });
-                            appendWithLinks(descDiv, data.description);
+                            if (typeof data.description === 'string') {
+                                const descDiv = body.createDiv({ cls: "ms-description" });
+                                appendWithLinks(descDiv, data.description);
+                            } else if (Array.isArray(data.description)) {
+                                data.description.forEach(desc => {
+                                    const descDiv = body.createDiv({ cls: "ms-description" });
+                                    descDiv.createSpan({ cls: "ms-std-trait-name", text: `${desc.name}. ` });
+                                    const descSpan = descDiv.createSpan({ cls: "ms-std-trait-desc" });
+                                    appendWithLinks(descSpan, desc.desc);
+                                });
+                            }
+                            body.createDiv({ cls: "ms-divider" });
                         }
 
                         if (Array.isArray(data.passive)) {
@@ -80,6 +99,15 @@ module.exports = class StatblockPlugin extends obsidian.Plugin {
                                 const actDiv = body.createDiv({ cls: "ms-std-action" });
                                 actDiv.createSpan({ cls: "ms-action-name", text: `${action.name}. ` });
                                 appendWithLinks(actDiv, action.desc);
+                            });
+                        }
+
+                        if (Array.isArray(data.special)) {
+                            data.special.forEach(p => {
+                                const tDiv = body.createDiv({ cls: "ms-std-special-box" });
+                                tDiv.createSpan({ cls: "ms-std-trait-name", text: `${p.name}. ` });
+                                const descSpan = tDiv.createSpan({ cls: "ms-std-trait-desc" });
+                                appendWithLinks(descSpan, p.desc);
                             });
                         }
 
@@ -133,7 +161,17 @@ module.exports = class StatblockPlugin extends obsidian.Plugin {
                         body.createDiv({ cls: "ms-divider" });
                         
                         if (data.description) {
-                            body.createDiv({ cls: "ms-description", text: data.description });
+                            if (typeof data.description === 'string') {
+                                const descDiv = body.createDiv({ cls: "ms-description" });
+                                appendWithLinks(descDiv, data.description);
+                            } else if (Array.isArray(data.description)) {
+                                data.description.forEach(desc => {
+                                    const descDiv = body.createDiv({ cls: "ms-description" });
+                                    descDiv.createSpan({ cls: "ms-std-trait-name", text: `${desc.name}. ` });
+                                    const descSpan = descDiv.createSpan({ cls: "ms-std-trait-desc" });
+                                    appendWithLinks(descSpan, desc.desc);
+                                });
+                            }
                             body.createDiv({ cls: "ms-divider" });
                         }
 
@@ -147,6 +185,8 @@ module.exports = class StatblockPlugin extends obsidian.Plugin {
                             });
                         }
 
+                        
+
                         if (data.actions) {
                             const actionsDiv = body.createDiv({ cls: "ms-actions-section" });
                             const actionsHeader = actionsDiv.createDiv({ cls: "ms-actions-header" });
@@ -158,6 +198,15 @@ module.exports = class StatblockPlugin extends obsidian.Plugin {
                                 const actLi = actionsUl.createEl("li", { cls: "ms-action-item" });
                                 actLi.createSpan({ cls: "ms-action-name", text: `${action.name}. ` });
                                 appendWithLinks(actLi, action.desc);
+                            });
+                        }
+
+                        if (Array.isArray(data.special)) {
+                            data.special.forEach(p => {
+                                const tDiv = body.createDiv({ cls: "ms-std-special-box" });
+                                tDiv.createSpan({ cls: "ms-std-trait-name", text: `${p.name}. ` });
+                                const descSpan = tDiv.createSpan({ cls: "ms-std-trait-desc" });
+                                appendWithLinks(descSpan, p.desc);
                             });
                         }
 

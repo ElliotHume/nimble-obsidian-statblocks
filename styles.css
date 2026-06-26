@@ -182,11 +182,41 @@
 }
 
 .ms-std-trait-box {
-    background-color: #dfd5c0; /* Grå/brun bakgrunn */
-    margin: 8px -15px;
+    background-color: #bbb19c; /* Grå/brun bakgrunn */
+    margin: 8px -30px;
     padding: 6px 20px;
     /* Lager de spisse pil-kantene på sidene */
     clip-path: polygon(12px 0, calc(100% - 12px) 0, 100% 50%, calc(100% - 12px) 100%, 12px 100%, 0 50%);
+    /* box-shadow gets clipped by clip-path, so use filter: drop-shadow which
+       follows the arrow silhouette instead. Tune offset/blur/alpha to taste. */
+    filter: drop-shadow(0 10px 10px rgba(0, 0, 0, 1));
+}
+
+.ms-std-special-box {
+    background-color: #d1c2a3; /* Grå/brun bakgrunn */
+    margin: 8px -10px;
+    padding: 6px 20px;
+    /* Circular cut-outs at each corner. clip-path: polygon() can only make
+       straight edges, so we use a mask composed of four radial-gradients,
+       one per corner. Each gradient tile is transparent inside --notch
+       (the scooped circle) and opaque elsewhere. Adjust --notch for size. */
+    --notch: 14px;
+    -webkit-mask:
+        radial-gradient(circle var(--notch) at top left,     #0000 98%, #000) top left,
+        radial-gradient(circle var(--notch) at top right,    #0000 98%, #000) top right,
+        radial-gradient(circle var(--notch) at bottom left,  #0000 98%, #000) bottom left,
+        radial-gradient(circle var(--notch) at bottom right, #0000 98%, #000) bottom right;
+    -webkit-mask-size: 51% 51%;
+    -webkit-mask-repeat: no-repeat;
+    mask:
+        radial-gradient(circle var(--notch) at top left,     #0000 98%, #000) top left,
+        radial-gradient(circle var(--notch) at top right,    #0000 98%, #000) top right,
+        radial-gradient(circle var(--notch) at bottom left,  #0000 98%, #000) bottom left,
+        radial-gradient(circle var(--notch) at bottom right, #0000 98%, #000) bottom right;
+    mask-size: 51% 51%;
+    mask-repeat: no-repeat;
+    /* drop-shadow follows the masked silhouette (box-shadow would not). */
+    filter: drop-shadow(0 10px 10px rgba(0, 0, 0, 1));
 }
 
 .ms-std-trait-name {
@@ -196,6 +226,18 @@
 }
 
 .ms-std-trait-desc {
+    font-style: italic;
+}
+
+/* Inline markdown parsed by appendWithLinks. Scoped to the statblock so it
+   doesn't affect the rest of the note. Bold gets heavier weight; italic is
+   forced on even inside already-italic contexts (trait/desc) so it still
+   reads as emphasised rather than blending in. */
+.monster-statblock strong {
+    font-weight: 900;
+}
+
+.monster-statblock em {
     font-style: italic;
 }
 

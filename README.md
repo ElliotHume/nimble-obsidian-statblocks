@@ -78,6 +78,7 @@ Multiple monsters can be rendered in a single block by using a YAML list:
 | `description` | string | Flavour or rules text shown below the header. |
 | `passive` | list | Passive traits — each entry has `name` and `desc`. |
 | `actions` | list | Actions — each entry has `name` and `desc`. |
+| `special` | list | Special traits, rendered in a distinct box with circular corner cut-outs — each entry has `name` and `desc`. |
 | `essence` | list | Essence rewards — each entry has `name` and `desc`. |
 | `loot` | list | Loot entries — each entry has an `item` field. |
 
@@ -109,6 +110,9 @@ description: An ancient construct bound together by necrotic energy.
 passive:
   - name: Pestilent Aura
     desc: Creatures that start their turn within 10 ft. take 2 HP.
+special:
+  - name: Necrotic Regeneration
+    desc: Regains **5 HP** at the start of each turn unless it took *radiant* damage.
 actions_pretext: "The colossus acts twice each round."
 actions:
   - name: Crushing Slam
@@ -136,5 +140,16 @@ Trait and action descriptions support Obsidian wiki-links. Both formats are reco
 - `[[Target Note|Display Text]]`
 
 HP values and `X more damage` references are automatically highlighted in red.
+
+---
+
+## Inline Formatting
+
+Description text (traits, actions, special, bloodied, last stand, etc.) also supports basic Markdown emphasis:
+
+- `**bold**` → **bold** (rendered as `<strong>`)
+- `*italic*` → *italic* (rendered as `<em>`)
+
+Formatting can wrap wiki-links and HP/damage highlights, e.g. `**Deals 8 HP to [[Goblin]]**`. Note that emphasis markers cannot be nested inside one another (e.g. `*a **b** c*`), and the inner text cannot contain a literal `*`.
 
 
