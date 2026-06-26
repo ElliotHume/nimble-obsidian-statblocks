@@ -81,6 +81,7 @@
 }
 
 .ms-std-trait-box,
+.ms-std-essence-box,
 .ms-action-item,
 .ms-std-action,
 .ms-special-line,
@@ -91,6 +92,13 @@
 
 .ms-traits { font-style: italic; }
 .ms-divider { border-bottom: 1.5px solid #222; margin: 10px 0; }
+/* Separator before the essence/loot reward section. Heavier top rule with a
+   larger gap below to visually detach rewards from the stat/action body. */
+.ms-large-divider {
+    border-top: 1.5px solid #222;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
 
 .ms-actions-header { margin-bottom: 5px; }
 .ms-section-title {
@@ -226,6 +234,46 @@
 }
 
 .ms-std-trait-desc {
+    font-style: italic;
+}
+
+/* Essence reward box: same arrow silhouette as trait boxes but a warmer tan
+   and inset margins so rewards read as a distinct grouping. drop-shadow is
+   used (not box-shadow) because clip-path would clip a box-shadow. */
+.ms-std-essence-box {
+    background-color: #ddc7a6;
+    margin: 8px 20px;
+    padding: 6px 20px;
+    clip-path: polygon(12px 0, calc(100% - 12px) 0, 100% 50%, calc(100% - 12px) 100%, 12px 100%, 0 50%);
+    filter: drop-shadow(0 10px 10px rgba(0, 0, 0, 1));
+}
+
+/* Loot box: dark fill with light text to contrast the essence box. */
+.ms-std-loot-box {
+    background-color: #000000;
+    margin: 8px 20px;
+    padding: 6px 20px;
+    clip-path: polygon(12px 0, calc(100% - 12px) 0, 100% 50%, calc(100% - 12px) 100%, 12px 100%, 0 50%);
+    filter: drop-shadow(0 10px 10px rgba(0, 0, 0, 1));
+}
+
+.ms-std-essence-name {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-weight: 900;
+    font-size: 8pt;
+    font-style: italic;
+}
+
+.ms-std-loot-name {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-weight: 900;
+    font-size: 8pt;
+    font-style: italic;
+    color: #ffffff;
+}
+
+.ms-std-essence-desc {
+    font-size: 7pt;
     font-style: italic;
 }
 
